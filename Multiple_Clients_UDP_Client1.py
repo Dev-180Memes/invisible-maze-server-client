@@ -1,6 +1,5 @@
 import socket
 
-
 def start_client(host='127.0.0.1', port=65432):
     client = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     server_address = (host, port)
@@ -13,7 +12,6 @@ def start_client(host='127.0.0.1', port=65432):
         if response.decode('utf-8') == "Exit found":
             print("You won!")
             break
-
 
 if __name__ == "__main__":
     start_client()

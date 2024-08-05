@@ -1,6 +1,5 @@
 import socket
 
-
 maze = [
     [0, 1, 0, 0, 0],
     [0, 1, 0, 1, 0],
@@ -9,7 +8,6 @@ maze = [
     [0, 0, 0, 1, 'E']
 ]
 start_position = (0, 0)
-
 
 def check_move(position, direction):
     x, y = position
@@ -28,20 +26,21 @@ def check_move(position, direction):
             return (x, y), "Exit found"
     return position, "Invalid move"
 
-
 def start_server(host='127.0.0.1', port=65432):
     server = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     server.bind((host, port))
     print("UDP Server started.")
-    position = start_position
+    positions = {}
     while True:
         data, client_address = server.recvfrom(1024)
         direction = data.decode('utf-8')
-        position, response = check_move(position, direction)
+        if client_address not in positions:
+            positions[client_address] = start_position
+        position, response = check_move(positions[client_address], direction)
+        positions[client_address] = position
         server.sendto(response.encode('utf-8'), client_address)
         if response == "Exit found":
             break
-
 
 if __name__ == "__main__":
     start_server()
